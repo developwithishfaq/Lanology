@@ -20,12 +20,6 @@ import screens.sign_in.SigninScreen
 fun App(viewModel: HomeScreenViewModel) {
     MaterialTheme {
         Column {
-            Text(
-                "Lanology Client",
-                fontSize = 18.sp,
-                color = Color.Black
-            )
-
             val state by viewModel.state.collectAsState()
             if (state.showSignInScreen) {
                 var userName by remember { mutableStateOf("") }

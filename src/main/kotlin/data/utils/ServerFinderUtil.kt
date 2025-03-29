@@ -18,7 +18,11 @@ class ServerFinderUtil(
 
     private val _servers = MutableStateFlow<List<ServerModel>>(emptyList())
     val servers = _servers.asStateFlow()
+
     private var ipAddress: String? = null
+    fun getIpAddress(): String {
+        return ipAddress ?: ""
+    }
 
     fun startFinding() {
         startListeningForServers()
@@ -33,27 +37,31 @@ class ServerFinderUtil(
                 val packet = DatagramPacket(buffer, buffer.size)
                 socket.receive(packet)
                 val message = String(packet.data, 0, packet.length)
+                println("Server Message=${message}")
                 if (message.startsWith("CHAT_SERVER")) {
-                    println("Message=${message}")
                     val serverIp = message.getMessageAt(1)
                     val serverName = message.getMessageAt(2)
-                    addServer(serverIp, serverName)
+                    val serverId = message.getMessageAt(3)
+                    addServer(serverIp, serverName, serverId)
                 }
             }
         }
     }
 
-    private fun addServer(serverIp: String, serverName: String) {
+    private fun addServer(serverIp: String, serverName: String, serverId: String) {
+        println("----------------------------")
+        println("Server Ip=${serverIp}\nName=${serverName}\nMy Ip=${ipAddress}")
+        println("----------------------------")
         if (serverIp == ipAddress) {
             return
         }
         val list = servers.value.toMutableList()
         val index = list.indexOfFirst {
-            it.serverIp == serverIp
+            it.serverId == serverId
         }
         if (index == -1) {
             list.add(
-                ServerModel(serverName, serverIp)
+                ServerModel(serverName, serverIp, serverId)
             )
         }
         _servers.update {

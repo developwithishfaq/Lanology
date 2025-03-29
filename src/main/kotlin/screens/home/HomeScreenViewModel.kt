@@ -1,8 +1,10 @@
 package screens.home
 
+import data.local.ChatsManager
 import data.local.LocalPrefs
 import data.utils.ClientServerCommunicator
 import data.utils.ServerFinderUtil
+import domain.asMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +17,10 @@ data class HomeScreenState(
 class HomeScreenViewModel(
     private val prefs: LocalPrefs = LocalPrefs(),
     private val serverFinderUtil: ServerFinderUtil = ServerFinderUtil(prefs),
-    private val messageSender: ClientServerCommunicator = ClientServerCommunicator()
+    private val messageSender: ClientServerCommunicator = ClientServerCommunicator(
+        serverFinderUtil,
+        ChatsManager(prefs)
+    )
 ) {
     val servers = serverFinderUtil.servers
 
@@ -32,13 +37,20 @@ class HomeScreenViewModel(
 
     fun onEvent(events: HomeScreenEvents) {
         when (events) {
-
             is HomeScreenEvents.SendMessage -> {
-                messageSender.sendMessage(events.ip, "Hi From Client")
+                messageSender.sendMessage(events.ip, events.msg.asMessage(events.id, events.ip))
             }
 
             HomeScreenEvents.ShowSignIn -> {
                 _state.update { it.copy(showSignInScreen = it.showSignInScreen.not()) }
+            }
+
+            is HomeScreenEvents.OnMessageChange -> {
+                _state.update {
+                    it.copy(
+                        msg = events.msg
+                    )
+                }
             }
         }
     }
