@@ -1,4 +1,4 @@
-package screens
+package screens.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +9,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -20,6 +21,10 @@ fun HomeScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val servers by viewModel.servers.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.startServices()
+    }
+
     Column {
         TextField(
             value = state.msg,

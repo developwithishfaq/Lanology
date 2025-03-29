@@ -1,5 +1,6 @@
 package data.utils
 
+import data.local.LocalPrefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -10,14 +11,14 @@ import java.net.ServerSocket
 import java.net.Socket
 
 class ClientServerCommunicator(
-    private val serverBroadcaster: ServerBroadcaster = ServerBroadcaster()
+    private val serverFinderUtil: ServerFinderUtil = ServerFinderUtil(LocalPrefs())
 ) {
     private val CLIENT_PORT = 4001
 
 
-    init {
+    fun init() {
         startListening()
-        serverBroadcaster.startBroadcasting()
+        serverFinderUtil.startBroadcasting()
     }
 
 

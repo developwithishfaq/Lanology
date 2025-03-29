@@ -1,19 +1,19 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import screens.HomeScreen
-import screens.HomeScreenViewModel
+import kotlinx.coroutines.launch
+import screens.home.HomeScreen
+import screens.home.HomeScreenEvents
+import screens.home.HomeScreenViewModel
+import screens.sign_in.SigninScreen
 
 @Composable
 @Preview
@@ -25,7 +25,19 @@ fun App(viewModel: HomeScreenViewModel) {
                 fontSize = 18.sp,
                 color = Color.Black
             )
-            HomeScreen(viewModel)
+
+            val state by viewModel.state.collectAsState()
+            if (state.showSignInScreen) {
+                var userName by remember { mutableStateOf("") }
+                SigninScreen(userName, onNameChange = { userName = it }, onSignInClick = {
+                    if (userName.isNotBlank()) {
+                        viewModel.setUserName(userName)
+                        viewModel.onEvent(HomeScreenEvents.ShowSignIn)
+                    }
+                })
+            } else {
+                HomeScreen(viewModel)
+            }
         }
     }
 }
@@ -33,9 +45,9 @@ fun App(viewModel: HomeScreenViewModel) {
 fun main() = application {
     val viewModel = HomeScreenViewModel()
     Window(
-        onCloseRequest = ::exitApplication, title = "Lanology",
+        onCloseRequest = ::exitApplication,
+        title = "Lanology",
     ) {
         App(viewModel = viewModel)
-//        Text("Hiiiiiiii")
     }
 }
