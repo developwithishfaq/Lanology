@@ -44,7 +44,10 @@ class HomeScreenViewModel(
     fun onEvent(events: HomeScreenEvents) {
         when (events) {
             is HomeScreenEvents.SendMessage -> {
-                messageSender.sendMessage(events.ip, events.msg.asMessage(events.id, events.ip))
+                messageSender.sendMessage(
+                    targetIp = events.ip,
+                    message = events.msg.asMessage(events.id, events.ip)
+                )
             }
 
             HomeScreenEvents.ShowSignIn -> {
