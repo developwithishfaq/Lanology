@@ -45,13 +45,14 @@ class ServerFinderUtil(
     }
 
     private fun addServer(serverIp: String, serverName: String, serverId: String) {
-        println("----------------------------")
-        println("Server Ip=${serverIp}\nName=${serverName}\nMy Ip=${ipAddress}")
-        println("----------------------------")
         if (serverIp == ipAddress) {
             return
         }
-        serversManager.addServer(serverIp, serverName, serverId)
+        serversManager.addServer(
+            serverIp = serverIp,
+            serverName = serverName,
+            serverId = serverId
+        )
     }
 
     fun startBroadcasting() {

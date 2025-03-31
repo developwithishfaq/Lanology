@@ -21,6 +21,7 @@ class ChatsManager(
                 isSentByMe = prefs.getDeskId() == model.serverId
             )
         )
+        println("Chat Added $model\nSize=${list.size}")
         _chats.update { list }
     }
 

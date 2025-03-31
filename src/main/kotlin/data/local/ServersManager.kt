@@ -13,6 +13,8 @@ class ServersManager {
 
 
     fun getServerById(id: String): ServerModel? {
+        println("getServerById Called")
+        println("Servers(${servers.value.size}) Id($id)\nList=${servers.value}")
         return servers.value.firstOrNull { it.serverId == id }
     }
 
@@ -22,6 +24,9 @@ class ServersManager {
             it.serverId == serverId
         }
         if (index == -1) {
+            println("----------------------------")
+            println("Server Ip=${serverIp}\nName=${serverName}\nMy Ip=${serverIp}")
+            println("----------------------------")
             list.add(
                 ServerModel(serverName, serverIp, serverId)
             )

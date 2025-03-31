@@ -64,6 +64,7 @@ class ClientServerCommunicator(
                 val serverId = message.getMessageAt(1)
                 val chat = message.getMessageAt(3)
                 val serverModel = serversManager.getServerById(serverId)
+                println("serverModel is $serverModel")
                 if (serverModel != null) {
                     chatsManager.addChat(
                         ChatModel(
