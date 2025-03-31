@@ -14,10 +14,6 @@ class ChatsManager(
     private val _chats = MutableStateFlow<List<ChatModel>>(emptyList())
     val chats = _chats.asStateFlow()
 
-    init {
-
-    }
-
     fun addChat(model: ChatModel) {
         val list = chats.value.toMutableList()
         list.add(

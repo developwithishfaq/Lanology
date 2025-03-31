@@ -2,6 +2,7 @@ package screens.home
 
 import data.local.ChatsManager
 import data.local.LocalPrefs
+import data.local.ServersManager
 import data.utils.ClientServerCommunicator
 import data.utils.ServerFinderUtil
 import domain.asMessage
@@ -16,13 +17,18 @@ data class HomeScreenState(
 
 class HomeScreenViewModel(
     private val prefs: LocalPrefs = LocalPrefs(),
-    private val serverFinderUtil: ServerFinderUtil = ServerFinderUtil(prefs),
+    private val serversManager: ServersManager = ServersManager(),
+    private val serverFinderUtil: ServerFinderUtil = ServerFinderUtil(prefs, serversManager),
+    private val chatsManager: ChatsManager = ChatsManager(prefs),
     private val messageSender: ClientServerCommunicator = ClientServerCommunicator(
-        serverFinderUtil,
-        ChatsManager(prefs)
+        serverFinderUtil = serverFinderUtil,
+        chatsManager = chatsManager,
+        serversManager = serversManager
     )
 ) {
-    val servers = serverFinderUtil.servers
+
+    val servers = serversManager.servers
+    val chats = chatsManager.chats
 
     private val _state = MutableStateFlow(HomeScreenState())
     val state = _state.asStateFlow()

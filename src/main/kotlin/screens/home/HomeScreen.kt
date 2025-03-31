@@ -20,12 +20,13 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel
 ) {
     val servers by viewModel.servers.collectAsState()
+    val chats by viewModel.chats.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.startServices()
     }
 
     Column {
-        ChatScreen(servers = servers, chats = fakeChats, onSendMessage = { ip, id, msg ->
+        ChatScreen(servers = servers, chats = chats, onSendMessage = { ip, id, msg ->
             viewModel.onEvent(HomeScreenEvents.SendMessage(ip, id, msg))
         })
     }

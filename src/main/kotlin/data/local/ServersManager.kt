@@ -3,6 +3,8 @@ package data.local
 import domain.models.ServerModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 
 class ServersManager {
 
@@ -10,8 +12,23 @@ class ServersManager {
     val servers = _servers.asStateFlow()
 
 
-    fun addServer(serverModel: ServerModel) {
-        val servers = servers.value.toMutableList()
+    fun getServerById(id: String): ServerModel? {
+        return servers.value.firstOrNull { it.serverId == id }
+    }
+
+    fun addServer(serverIp: String, serverName: String, serverId: String) {
+        val list = servers.value.toMutableList()
+        val index = list.indexOfFirst {
+            it.serverId == serverId
+        }
+        if (index == -1) {
+            list.add(
+                ServerModel(serverName, serverIp, serverId)
+            )
+        }
+        _servers.update {
+            list
+        }
     }
 
 }

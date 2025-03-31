@@ -2,6 +2,7 @@ package data.utils
 
 import data.local.ChatsManager
 import data.local.LocalPrefs
+import data.local.ServersManager
 import domain.MainSplitter
 import domain.getMessageAt
 import domain.models.ChatModel
@@ -16,7 +17,8 @@ import java.net.Socket
 
 class ClientServerCommunicator(
     private val serverFinderUtil: ServerFinderUtil,
-    private val chatsManager: ChatsManager
+    private val chatsManager: ChatsManager,
+    private val serversManager: ServersManager
 ) {
     private val CLIENT_PORT = 4001
 
@@ -60,14 +62,19 @@ class ClientServerCommunicator(
             println("Received: $message")
             if (message.startsWith("CHAT$MainSplitter")) {
                 val serverId = message.getMessageAt(1)
-                val serverIp = message.getMessageAt(2)
                 val chat = message.getMessageAt(3)
-                chatsManager.addChat(
-                    ChatModel(
-                        message = chat,
-                        serverName =
+                val serverModel = serversManager.getServerById(serverId)
+                if (serverModel != null) {
+                    chatsManager.addChat(
+                        ChatModel(
+                            message = chat,
+                            serverName = serverModel.serverName,
+                            serverId = serverModel.serverId,
+                            messageType = 0,
+                            serverIp = serverModel.serverIp
+                        )
                     )
-                )
+                }
             }
             clientSocket.close()
         }

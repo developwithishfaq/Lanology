@@ -1,6 +1,7 @@
 package data.utils
 
 import data.local.LocalPrefs
+import data.local.ServersManager
 import domain.getBindMessage
 import domain.getMessageAt
 import domain.models.ServerModel
@@ -13,18 +14,13 @@ import java.net.DatagramSocket
 import java.net.InetAddress
 
 class ServerFinderUtil(
-    private val prefs: LocalPrefs
+    private val prefs: LocalPrefs,
+    private val serversManager: ServersManager
 ) {
 
-    private val _servers = MutableStateFlow<List<ServerModel>>(emptyList())
-    val servers = _servers.asStateFlow()
-
     private var ipAddress: String? = null
-    fun getIpAddress(): String {
-        return ipAddress ?: ""
-    }
 
-    fun startFinding() {
+    private fun startFinding() {
         startListeningForServers()
     }
 
@@ -55,18 +51,7 @@ class ServerFinderUtil(
         if (serverIp == ipAddress) {
             return
         }
-        val list = servers.value.toMutableList()
-        val index = list.indexOfFirst {
-            it.serverId == serverId
-        }
-        if (index == -1) {
-            list.add(
-                ServerModel(serverName, serverIp, serverId)
-            )
-        }
-        _servers.update {
-            list
-        }
+        serversManager.addServer(serverIp, serverName, serverId)
     }
 
     fun startBroadcasting() {
