@@ -46,7 +46,7 @@ class HomeScreenViewModel(
             is HomeScreenEvents.SendMessage -> {
                 messageSender.sendMessage(
                     targetIp = events.ip,
-                    message = events.msg.asMessage(events.id, events.ip)
+                    message = events.msg.asMessage(serverId = prefs.getDeskId(), serverIp = events.ip)
                 )
             }
 
