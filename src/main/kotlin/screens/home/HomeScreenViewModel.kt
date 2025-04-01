@@ -6,6 +6,7 @@ import data.local.SaveChatInStorage
 import data.local.ServersManager
 import data.utils.ClientServerCommunicator
 import data.utils.ServerFinderUtil
+import domain.usecases.GetAllChatsFromLocal
 import domain.usecases.SendChatMessage
 import domain.usecases.SendMessageToServer
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,8 @@ class HomeScreenViewModel(
     private val prefs: LocalPrefs = LocalPrefs(),
     private val serversManager: ServersManager = ServersManager(),
     private val serverFinderUtil: ServerFinderUtil = ServerFinderUtil(prefs, serversManager),
-    private val chatsManager: ChatsManager = ChatsManager(prefs),
+    private val getAllChatsFromLocal: GetAllChatsFromLocal = GetAllChatsFromLocal(),
+    private val chatsManager: ChatsManager = ChatsManager(getAllChatsFromLocal),
     private val saveChatInStorage: SaveChatInStorage = SaveChatInStorage(),
     private val sendMessageToServer: SendMessageToServer = SendMessageToServer(),
     private val sendChatMessage: SendChatMessage = SendChatMessage(
