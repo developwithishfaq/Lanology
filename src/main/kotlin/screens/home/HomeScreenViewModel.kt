@@ -21,10 +21,10 @@ data class HomeScreenState(
 
 class HomeScreenViewModel(
     private val prefs: LocalPrefs = LocalPrefs(),
-    private val serversManager: ServersManager = ServersManager(),
-    private val serverFinderUtil: ServerFinderUtil = ServerFinderUtil(prefs, serversManager),
     private val getAllChatsFromLocal: GetAllChatsFromLocal = GetAllChatsFromLocal(),
-    private val chatsManager: ChatsManager = ChatsManager(getAllChatsFromLocal),
+    private val serversManager: ServersManager = ServersManager(getAllChatsFromLocal),
+    private val serverFinderUtil: ServerFinderUtil = ServerFinderUtil(prefs, serversManager),
+    private val chatsManager: ChatsManager = ChatsManager(getAllChatsFromLocal, serversManager),
     private val saveChatInStorage: SaveChatInStorage = SaveChatInStorage(),
     private val sendMessageToServer: SendMessageToServer = SendMessageToServer(),
     private val sendChatMessage: SendChatMessage = SendChatMessage(

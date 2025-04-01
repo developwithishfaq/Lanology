@@ -48,7 +48,8 @@ class ServerFinderUtil(
         serversManager.addServer(
             serverIp = serverIp,
             serverName = serverName,
-            serverId = serverId
+            serverId = serverId,
+            isOnline = false
         )
     }
 

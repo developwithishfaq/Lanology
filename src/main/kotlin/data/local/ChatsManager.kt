@@ -7,7 +7,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class ChatsManager(
-    private val getAllChatsFromLocal: GetAllChatsFromLocal
+    private val getAllChatsFromLocal: GetAllChatsFromLocal,
+    private val serversManager: ServersManager
 ) {
 
     private val _chats = MutableStateFlow<List<ChatModel>>(emptyList())
@@ -15,6 +16,14 @@ class ChatsManager(
 
     init {
         val prevChats = getAllChatsFromLocal.invoke()
+        prevChats.forEach { chat ->
+            serversManager.addServer(
+                serverName = chat.serverName,
+                serverId = chat.serverId,
+                serverIp = chat.serverIp,
+                isOnline = false
+            )
+        }
         _chats.update { prevChats }
     }
 
