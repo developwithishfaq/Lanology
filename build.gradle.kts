@@ -4,7 +4,9 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
+    kotlin("plugin.serialization") version "1.9.23"
 }
+
 
 //group = "com.name.upload"
 group = "com.client.lanology"
@@ -22,6 +24,8 @@ dependencies {
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("org.slf4j:slf4j-simple:2.0.7") // Add this line
 }
 
 compose.desktop {

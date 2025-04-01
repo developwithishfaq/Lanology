@@ -1,8 +1,13 @@
 package screens.chat
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -30,24 +35,17 @@ import domain.models.ServerModel
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ChatScreen(
-    servers: List<ServerModel>,
-    chats: List<ChatModel>,
-    onSendMessage: (String, String, String) -> Unit
+    servers: List<ServerModel>, chats: List<ChatModel>, onSendMessage: (String, String, String) -> Unit
 ) {
     var selectedServer by remember { mutableStateOf<ServerModel?>(null) }
-    val chatScrollState = rememberScrollState()
 
     Row(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {// Sidebar for users list
         Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(280.dp)
+            modifier = Modifier.fillMaxHeight().width(280.dp)
                 .background(Color(0xFFF5F5F5)) // Softer background for a modern feel
-                .padding(vertical = 8.dp),
-            horizontalAlignment = Alignment.Start
+                .padding(vertical = 8.dp), horizontalAlignment = Alignment.Start
         ) {
             Text(
                 text = "Users",
@@ -60,20 +58,13 @@ fun ChatScreen(
 
             servers.forEach { server ->
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)
                         .clip(RoundedCornerShape(8.dp)) // Rounded corners for smooth UI
-                        .clickable { selectedServer = server }
-                        .background(
+                        .clickable { selectedServer = server }.background(
                             if (selectedServer == server) MyColors.Green else Color.Transparent
-                        )
-                        .padding(vertical = 12.dp, horizontal = 16.dp)
+                        ).padding(vertical = 12.dp, horizontal = 16.dp)
                         .hoverable(remember { MutableInteractionSource() })
-                        .pointerMoveFilter(
-                            onEnter = { true },
-                            onExit = { false }
-                        ),
+                        .pointerMoveFilter(onEnter = { true }, onExit = { false }),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
@@ -98,18 +89,13 @@ fun ChatScreen(
 
         // Chat area
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF9F9F9)) // Light gray background for a modern look
+            modifier = Modifier.fillMaxSize().background(Color(0xFFF9F9F9)) // Light gray background for a modern look
         ) {
             selectedServer?.let { server ->
                 // Header
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(vertical = 12.dp, horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth().background(Color.White)
+                        .padding(vertical = 12.dp, horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Chat with ${server.serverName}",
@@ -119,32 +105,26 @@ fun ChatScreen(
                     )
                 }
                 Divider(color = Color(0xFFE0E0E0))
-
-                // Chat Messages
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .verticalScroll(chatScrollState)
+                val listState = rememberLazyListState()
+                LazyColumn(
+                    modifier = Modifier.weight(1f).padding(horizontal = 16.dp, vertical = 8.dp),
+                    state = listState
                 ) {
-                    chats.filter { it.serverId == server.serverId }.forEach { chat ->
+                    items(chats.filter { it.serverId == server.serverId }) { chat ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = if (chat.isSentByMe) Arrangement.End else Arrangement.Start
                         ) {
                             Box(
-                                modifier = Modifier
-                                    .background(
-                                        if (chat.isSentByMe) Color(0xFF007AFF) else Color(0xFFECECEC),
-                                        shape = RoundedCornerShape(
-                                            topStart = 12.dp,
-                                            topEnd = 12.dp,
-                                            bottomStart = if (chat.isSentByMe) 12.dp else 0.dp,
-                                            bottomEnd = if (chat.isSentByMe) 0.dp else 12.dp
-                                        )
+                                modifier = Modifier.background(
+                                    if (chat.isSentByMe) Color(0xFF007AFF) else Color(0xFFECECEC),
+                                    shape = RoundedCornerShape(
+                                        topStart = 12.dp,
+                                        topEnd = 12.dp,
+                                        bottomStart = if (chat.isSentByMe) 12.dp else 0.dp,
+                                        bottomEnd = if (chat.isSentByMe) 0.dp else 12.dp
                                     )
-                                    .padding(12.dp)
-                                    .widthIn(min = 60.dp, max = 300.dp),
+                                ).padding(12.dp).widthIn(min = 60.dp, max = 300.dp),
                             ) {
                                 Text(
                                     text = chat.message,
@@ -156,13 +136,15 @@ fun ChatScreen(
                         Spacer(modifier = Modifier.height(6.dp))
                     }
                 }
+                LaunchedEffect(chats.size) {
+                    if (chats.isNotEmpty()) {
+                        listState.animateScrollToItem(chats.size - 1)
+                    }
+                }
 
                 // Chat Input
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(12.dp),
+                    modifier = Modifier.fillMaxWidth().background(Color.White).padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     var message by remember { mutableStateOf("") }
@@ -178,11 +160,8 @@ fun ChatScreen(
                     TextField(
                         value = message,
                         onValueChange = { message = it },
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(Color.White, shape = RoundedCornerShape(24.dp))
-                            .padding(horizontal = 6.dp)
-                            .focusRequester(focusRequester) // Attach focus requester
+                        modifier = Modifier.weight(1f).background(Color.White, shape = RoundedCornerShape(24.dp))
+                            .padding(horizontal = 6.dp).focusRequester(focusRequester) // Attach focus requester
                             .onKeyEvent {
                                 if (it.key == Key.Enter && it.type == KeyEventType.KeyUp) {
                                     if (message.isNotBlank()) {
@@ -213,28 +192,27 @@ fun ChatScreen(
                             onSendMessage.invoke(server.serverIp, server.serverId, message)
                             message = ""
                         },
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape),
+                        modifier = Modifier.size(48.dp).clip(CircleShape),
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF007AFF)),
                         elevation = ButtonDefaults.elevation(4.dp)
                     ) {
                         Icon(Icons.Filled.Send, contentDescription = "Send", tint = Color.White)
                     }
-                }
-            } ?: run {
-                // No chat selected
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        "Select a server to start chatting",
-                        color = Color.Gray,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+//                    }
+                } ?: run {
+                    // No chat selected
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            "Select a server to start chatting",
+                            color = Color.Gray,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
-        }
 
+        }
     }
 }
 

@@ -1,5 +1,8 @@
 package domain.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ChatModel(
     val message: String,
     val serverName: String,

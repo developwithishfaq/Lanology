@@ -2,13 +2,12 @@ package screens.home
 
 import data.local.ChatsManager
 import data.local.LocalPrefs
+import data.local.SaveChatInStorage
 import data.local.ServersManager
 import data.utils.ClientServerCommunicator
 import data.utils.ServerFinderUtil
-import domain.asMessage
-import domain.getMessageAt
-import domain.models.ChatModel
 import domain.usecases.SendChatMessage
+import domain.usecases.SendMessageToServer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,13 +23,19 @@ class HomeScreenViewModel(
     private val serversManager: ServersManager = ServersManager(),
     private val serverFinderUtil: ServerFinderUtil = ServerFinderUtil(prefs, serversManager),
     private val chatsManager: ChatsManager = ChatsManager(prefs),
+    private val saveChatInStorage: SaveChatInStorage = SaveChatInStorage(),
+    private val sendMessageToServer: SendMessageToServer = SendMessageToServer(),
+    private val sendChatMessage: SendChatMessage = SendChatMessage(
+        chatsManager = chatsManager,
+        messageSender = sendMessageToServer,
+        prefs = prefs,
+        saveChatInStorage = saveChatInStorage
+    ),
     private val messageSender: ClientServerCommunicator = ClientServerCommunicator(
         serverFinderUtil = serverFinderUtil,
-        chatsManager = chatsManager,
         serversManager = serversManager,
-        prefs = prefs
+        sendChatMessage = sendChatMessage
     ),
-    private val sendChatMessage: SendChatMessage = SendChatMessage(chatsManager, messageSender, prefs)
 ) {
 
     val servers = serversManager.servers
