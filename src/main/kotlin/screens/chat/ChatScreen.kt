@@ -74,7 +74,7 @@ fun ChatScreen(
                         .padding(vertical = 12.dp, horizontal = 16.dp)
                         .hoverable(remember { MutableInteractionSource() })
                         .pointerMoveFilter(
-                            onEnter = { true }, // Change color on hover if needed
+                            onEnter = { true },
                             onExit = { false }
                         ),
                     verticalAlignment = Alignment.CenterVertically
