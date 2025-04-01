@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 
 data class HomeScreenState(
     val msg: String = "",
+    val myId: String = "",
     val showSignInScreen: Boolean = true
 )
 
@@ -23,14 +24,19 @@ class HomeScreenViewModel(
     private val messageSender: ClientServerCommunicator = ClientServerCommunicator(
         serverFinderUtil = serverFinderUtil,
         chatsManager = chatsManager,
-        serversManager = serversManager
+        serversManager = serversManager,
+        prefs = prefs
     )
 ) {
 
     val servers = serversManager.servers
     val chats = chatsManager.chats
 
-    private val _state = MutableStateFlow(HomeScreenState())
+    private val _state = MutableStateFlow(
+        HomeScreenState(
+            myId = prefs.getDeskId()
+        )
+    )
     val state = _state.asStateFlow()
 
     init {

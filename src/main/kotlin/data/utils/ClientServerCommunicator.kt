@@ -4,6 +4,8 @@ import data.local.ChatsManager
 import data.local.LocalPrefs
 import data.local.ServersManager
 import domain.MainSplitter
+import domain.asMessage
+import domain.getBindMessage
 import domain.getMessageAt
 import domain.models.ChatModel
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +20,8 @@ import java.net.Socket
 class ClientServerCommunicator(
     private val serverFinderUtil: ServerFinderUtil,
     private val chatsManager: ChatsManager,
-    private val serversManager: ServersManager
+    private val serversManager: ServersManager,
+    private val prefs: LocalPrefs
 ) {
     private val CLIENT_PORT = 4001
 
@@ -31,6 +34,19 @@ class ClientServerCommunicator(
 
     fun sendMessage(targetIp: String, message: String) {
         println("sendMessage:targetIp=${targetIp},message=${message}")
+//        getBindMessage("CHAT", serverId, serverIp, this.replace("#", " "))
+
+        chatsManager.addChat(
+            ChatModel(
+                message = message.getMessageAt(3),
+                serverName = prefs.userName,
+                serverId = message.getMessageAt(1),
+                messageType = 0,
+                serverIp = message.getMessageAt(2),
+                isSentByMe = true
+            )
+        )
+
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val socket = Socket(targetIp, CLIENT_PORT)

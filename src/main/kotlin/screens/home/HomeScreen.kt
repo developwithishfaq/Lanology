@@ -19,6 +19,7 @@ import screens.chat.ChatScreen
 fun HomeScreen(
     viewModel: HomeScreenViewModel
 ) {
+    val state by viewModel.state.collectAsState()
     val servers by viewModel.servers.collectAsState()
     val chats by viewModel.chats.collectAsState()
     LaunchedEffect(Unit) {
@@ -26,6 +27,7 @@ fun HomeScreen(
     }
 
     Column {
+        Text("Server Id = ${state.myId}")
         ChatScreen(servers = servers, chats = chats, onSendMessage = { ip, id, msg ->
             viewModel.onEvent(HomeScreenEvents.SendMessage(ip, id, msg))
         })
