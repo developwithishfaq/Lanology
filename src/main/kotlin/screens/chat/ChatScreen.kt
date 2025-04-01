@@ -3,32 +3,26 @@ package screens.chat
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import domain.models.ChatModel
-import domain.models.ServerModel
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import domain.MyColors
+import domain.models.ChatModel
+import domain.models.ServerModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -157,7 +151,7 @@ fun ChatScreen(
                                     .widthIn(min = 60.dp, max = 300.dp),
                             ) {
                                 Text(
-                                    text = chat.message+"\nSent by Me : ${chat.isSentByMe}",
+                                    text = chat.message,
                                     color = if (chat.isSentByMe) Color.White else Color.Black,
                                     fontSize = 16.sp
                                 )
