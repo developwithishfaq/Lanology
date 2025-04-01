@@ -157,7 +157,7 @@ fun ChatScreen(
                                     .widthIn(min = 60.dp, max = 300.dp),
                             ) {
                                 Text(
-                                    text = chat.message,
+                                    text = chat.message+"\nSent by Me : ${chat.isSentByMe}",
                                     color = if (chat.isSentByMe) Color.White else Color.Black,
                                     fontSize = 16.sp
                                 )

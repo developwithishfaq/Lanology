@@ -18,7 +18,7 @@ class ChatsManager(
         val list = chats.value.toMutableList()
         list.add(
             model.copy(
-                isSentByMe = prefs.getDeskId() == model.serverId
+//                isSentByMe = prefs.getDeskId() == model.serverId
             )
         )
         println("Chat Added $model\nSize=${list.size}")
