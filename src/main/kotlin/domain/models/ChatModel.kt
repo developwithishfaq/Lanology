@@ -6,11 +6,12 @@ data class ChatModel(
     val serverIp: String,
     val serverId: String,
     val messageType: Int = 0,
-    val isSentByMe: Boolean = false,
+    val isSentByMe: Boolean,
 )
 //MessageType
 // 0 text
 // 1 file
+/*
 
 val fakeChats = listOf(
     ChatModel("Hey, how are you?", "Alice", "192.168.1.10", "srv-001"),
@@ -24,3 +25,4 @@ val fakeChats = listOf(
     ChatModel("Already shared it with you.", "David", "192.168.1.13", "srv-004"),
     ChatModel("Great, thanks!", "Eve", "192.168.1.14", "srv-005")
 )
+*/

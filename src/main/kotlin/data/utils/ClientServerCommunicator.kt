@@ -36,17 +36,6 @@ class ClientServerCommunicator(
         println("sendMessage:targetIp=${targetIp},message=${message}")
 //        getBindMessage("CHAT", serverId, serverIp, this.replace("#", " "))
 
-        chatsManager.addChat(
-            ChatModel(
-                message = message.getMessageAt(3),
-                serverName = prefs.userName,
-                serverId = message.getMessageAt(1),
-                messageType = 0,
-                serverIp = message.getMessageAt(2),
-                isSentByMe = true
-            )
-        )
-
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val socket = Socket(targetIp, CLIENT_PORT)
@@ -88,7 +77,8 @@ class ClientServerCommunicator(
                             serverName = serverModel.serverName,
                             serverId = serverModel.serverId,
                             messageType = 0,
-                            serverIp = serverModel.serverIp
+                            serverIp = serverModel.serverIp,
+                            isSentByMe = false
                         )
                     )
                 }

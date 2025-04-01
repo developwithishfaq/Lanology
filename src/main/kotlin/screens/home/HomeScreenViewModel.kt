@@ -6,6 +6,9 @@ import data.local.ServersManager
 import data.utils.ClientServerCommunicator
 import data.utils.ServerFinderUtil
 import domain.asMessage
+import domain.getMessageAt
+import domain.models.ChatModel
+import domain.usecases.SendChatMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -26,7 +29,8 @@ class HomeScreenViewModel(
         chatsManager = chatsManager,
         serversManager = serversManager,
         prefs = prefs
-    )
+    ),
+    private val sendChatMessage: SendChatMessage = SendChatMessage(chatsManager, messageSender, prefs)
 ) {
 
     val servers = serversManager.servers
@@ -50,10 +54,25 @@ class HomeScreenViewModel(
     fun onEvent(events: HomeScreenEvents) {
         when (events) {
             is HomeScreenEvents.SendMessage -> {
+                sendChatMessage.invoke(
+                    message = events.msg,
+                    targetServerId = events.id,
+                    targetServerIp = events.ip
+                )/*
+                chatsManager.addChat(
+                    ChatModel(
+                        message = events.msg,
+                        serverName = prefs.userName,
+                        serverId = events.id,
+                        messageType = 0,
+                        serverIp = events.ip,
+                        isSentByMe = true
+                    )
+                )
                 messageSender.sendMessage(
                     targetIp = events.ip,
                     message = events.msg.asMessage(serverId = prefs.getDeskId(), serverIp = events.ip)
-                )
+                )*/
             }
 
             HomeScreenEvents.ShowSignIn -> {
