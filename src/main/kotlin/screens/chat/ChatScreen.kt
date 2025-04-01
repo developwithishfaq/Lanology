@@ -19,7 +19,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.pointerMoveFilter
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -170,7 +169,6 @@ fun ChatScreen(
 
 
                     val focusRequester = remember { FocusRequester() }
-                    val focusManager = LocalFocusManager.current
 
                     // Auto-focus when the UI is first loaded
                     LaunchedEffect(Unit) {
