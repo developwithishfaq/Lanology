@@ -14,8 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.pointerMoveFilter
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -108,13 +112,6 @@ fun ChatScreen(
                         .padding(vertical = 12.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    /*Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = "Chat Icon",
-                        tint = Color(0xFF007AFF),
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))*/
                     Text(
                         text = "Chat with ${server.serverName}",
                         fontSize = 20.sp,
@@ -171,15 +168,38 @@ fun ChatScreen(
                 ) {
                     var message by remember { mutableStateOf("") }
 
+
+                    val focusRequester = remember { FocusRequester() }
+                    val focusManager = LocalFocusManager.current
+
+                    // Auto-focus when the UI is first loaded
+                    LaunchedEffect(Unit) {
+                        focusRequester.requestFocus()
+                    }
+
                     TextField(
                         value = message,
                         onValueChange = { message = it },
                         modifier = Modifier
                             .weight(1f)
                             .background(Color.White, shape = RoundedCornerShape(24.dp))
-                            .padding(horizontal = 6.dp),
+                            .padding(horizontal = 6.dp)
+                            .focusRequester(focusRequester) // Attach focus requester
+                            .onKeyEvent {
+                                if (it.key == Key.Enter && it.type == KeyEventType.KeyUp) {
+                                    if (message.isNotBlank()) {
+                                        onSendMessage.invoke(server.serverIp, server.serverId, message)
+                                        message = ""
+                                        focusRequester.requestFocus() // Re-focus after sending
+                                    }
+                                    true  // Event handled
+                                } else {
+                                    false // Allow further event processing
+                                }
+                            },
                         placeholder = { Text("Type a message...", color = Color.Gray) },
                         shape = RoundedCornerShape(24.dp),
+
                         colors = TextFieldDefaults.textFieldColors(
                             backgroundColor = Color(0xFFF5F5F5),
                             focusedIndicatorColor = Color.Transparent,
