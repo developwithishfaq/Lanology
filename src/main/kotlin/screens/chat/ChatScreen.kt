@@ -193,6 +193,7 @@ fun ChatScreen(
                     Button(
                         onClick = {
                             onSendMessage.invoke(server.serverIp, server.serverId, message)
+                            message = ""
                         },
                         modifier = Modifier
                             .size(48.dp)
