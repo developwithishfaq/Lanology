@@ -16,14 +16,19 @@ class SendChatMessage(
     private val saveChatInStorage: SaveChatInStorage
 ) {
 
-    fun addChatModel(model: ChatModel) {
-        chatsManager.addChat(model)
-        saveChatInStorage.invoke(model)
-        CoroutineScope(Dispatchers.IO).launch {
-            messageSender.invoke(
-                targetIp = model.serverIp,
-                message = model.message.asMessage(serverId = prefs.getDeskId(), serverIp = model.serverIp)
-            )
+    fun addChatModel(model: ChatModel, sendToServer: Boolean = true) {
+        chatsManager.addChat(model = model)
+        saveChatInStorage.invoke(model = model)
+        if (sendToServer) {
+            CoroutineScope(Dispatchers.IO).launch {
+                messageSender.invoke(
+                    targetIp = model.serverIp,
+                    message = model.message.asMessage(
+                        serverId = prefs.getDeskId(),
+                        serverIp = model.serverIp
+                    )
+                )
+            }
         }
     }
 

@@ -9,14 +9,17 @@ import kotlinx.serialization.json.Json
 
 class SaveChatInStorage(
 ) {
-    operator fun invoke(chatModel: ChatModel) {
+    operator fun invoke(model: ChatModel) {
         val fileHandler = TextFileHandler("chats.txt")
-        val model = getJson().encodeToString(chatModel)
-        if (fileHandler.readText().isBlank()) {
-            fileHandler.writeText(model)
+        val allChatsStr = fileHandler.readText()
+        val allChatsList = if (allChatsStr.isNotBlank()) {
+            getJson().decodeFromString<List<ChatModel>>(allChatsStr)
         } else {
-            fileHandler.appendText("\n$model")
-        }
+            listOf()
+        }.toMutableList()
+        allChatsList.add(model)
+        val newChatsList = getJson().encodeToString(allChatsList)
+        fileHandler.writeText(newChatsList)
     }
 }
 

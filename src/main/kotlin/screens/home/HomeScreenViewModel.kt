@@ -34,7 +34,8 @@ class HomeScreenViewModel(
     private val messageSender: ClientServerCommunicator = ClientServerCommunicator(
         serverFinderUtil = serverFinderUtil,
         serversManager = serversManager,
-        sendChatMessage = sendChatMessage
+        chatsManager = chatsManager,
+        saveChatInStorage = saveChatInStorage
     ),
 ) {
 
@@ -63,21 +64,7 @@ class HomeScreenViewModel(
                     message = events.msg,
                     targetServerId = events.id,
                     targetServerIp = events.ip
-                )/*
-                chatsManager.addChat(
-                    ChatModel(
-                        message = events.msg,
-                        serverName = prefs.userName,
-                        serverId = events.id,
-                        messageType = 0,
-                        serverIp = events.ip,
-                        isSentByMe = true
-                    )
                 )
-                messageSender.sendMessage(
-                    targetIp = events.ip,
-                    message = events.msg.asMessage(serverId = prefs.getDeskId(), serverIp = events.ip)
-                )*/
             }
 
             HomeScreenEvents.ShowSignIn -> {
